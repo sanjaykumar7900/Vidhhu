@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viddittha Cheithan — UI/UX Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cotton: #EDEBDD;
+    --cherry: #810100;
+    --maroon: #630000;
+    --noir: #1B1717;
+    --cotton-muted: rgba(237,235,221,0.08);
+    --cotton-soft: rgba(237,235,221,0.55);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--noir);
+    color: var(--cotton);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--cherry);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+  }
+
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 60px;
+    mix-blend-mode: normal;
+  }
+  nav::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, var(--noir) 0%, transparent 100%);
+    z-index: -1;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--cotton);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--cherry); }
+  .nav-links { display: flex; gap: 40px; }
+  .nav-links a {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cotton-soft);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--cotton); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 120px 60px 80px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--cherry);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--cherry);
+  }
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(56px, 7vw, 100px);
+    font-weight: 300;
+    line-height: 0.95;
+    margin-bottom: 8px;
+    color: var(--cotton);
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--cherry);
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 2.5vw, 32px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cotton-soft);
+    margin-bottom: 40px;
+  }
+  .hero-desc {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(237,235,221,0.6);
+    max-width: 380px;
+    margin-bottom: 50px;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--cherry);
+    color: var(--cotton);
+    text-decoration: none;
+    padding: 16px 34px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .hero-cta:hover { background: var(--maroon); transform: translateX(4px); }
+  .hero-cta-arrow { font-size: 16px; }
+
+  .hero-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-bg-block {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--maroon) 0%, var(--cherry) 60%, #9a0101 100%);
+    clip-path: polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  .hero-stats {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 0 60px;
+  }
+  .hero-stat { text-align: left; }
+  .hero-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--cotton);
+  }
+  .hero-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(237,235,221,0.6);
+    margin-top: 6px;
+  }
+  .hero-stat-divider {
+    width: 50px; height: 1px;
+    background: rgba(237,235,221,0.2);
+  }
+
+  /* SCROLLING TICKER */
+  .ticker {
+    background: var(--cherry);
+    padding: 14px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-inner {
+    display: inline-flex;
+    animation: ticker 20s linear infinite;
+  }
+  .ticker-item {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cotton);
+    padding: 0 40px;
+    opacity: 0.9;
+  }
+  .ticker-dot {
+    color: rgba(237,235,221,0.4);
+    padding: 0 10px;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTIONS */
+  section { padding: 120px 60px; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--cherry);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--cherry);
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--cotton);
+    margin-bottom: 60px;
+  }
+  .section-title em { font-style: italic; color: var(--cherry); }
+
+  /* ABOUT */
+  .about { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .about-text p {
+    font-size: 16px;
+    line-height: 1.9;
+    color: rgba(237,235,221,0.7);
+    margin-bottom: 24px;
+  }
+  .about-text p strong { color: var(--cotton); font-weight: 500; }
+  .about-right { padding-top: 20px; }
+  .about-card {
+    border: 1px solid rgba(237,235,221,0.1);
+    padding: 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .about-card:hover { border-color: var(--cherry); }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--cherry);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: bottom;
+  }
+  .about-card:hover::before { transform: scaleY(1); }
+  .about-card-title {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cherry);
+    margin-bottom: 12px;
+  }
+  .about-card-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--cotton);
+    line-height: 1.4;
+  }
+
+  /* EXPERIENCE */
+  .experience-section { background: rgba(237,235,221,0.02); }
+  .experience-grid { display: grid; gap: 0; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 60px;
+    padding: 50px 0;
+    border-bottom: 1px solid rgba(237,235,221,0.08);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .exp-item:hover { background: rgba(129,1,0,0.04); }
+  .exp-item:first-child { border-top: 1px solid rgba(237,235,221,0.08); }
+  .exp-date {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(237,235,221,0.4);
+    padding-top: 4px;
+    text-transform: uppercase;
+  }
+  .exp-company {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--cherry);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .exp-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--cotton);
+    margin-bottom: 18px;
+  }
+  .exp-bullets { list-style: none; }
+  .exp-bullets li {
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(237,235,221,0.6);
+    margin-bottom: 8px;
+    padding-left: 18px;
+    position: relative;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--cherry);
+    font-size: 11px;
+  }
+
+  /* SKILLS */
+  .skills-section { }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(237,235,221,0.08);
+    border: 1px solid rgba(237,235,221,0.08);
+  }
+  .skill-cell {
+    background: var(--noir);
+    padding: 36px 30px;
+    transition: background 0.3s;
+  }
+  .skill-cell:hover { background: rgba(129,1,0,0.1); }
+  .skill-cell-category {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cherry);
+    margin-bottom: 16px;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .skill-tag {
+    font-size: 11px;
+    color: rgba(237,235,221,0.6);
+    border: 1px solid rgba(237,235,221,0.12);
+    padding: 5px 12px;
+    transition: all 0.25s;
+  }
+  .skill-tag:hover { border-color: var(--cherry); color: var(--cotton); }
+  .skill-cell-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--cotton);
+  }
+
+  /* PROJECTS */
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: rgba(237,235,221,0.08); }
+  .project-card {
+    background: var(--noir);
+    padding: 60px 50px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background 0.4s;
+  }
+  .project-card:hover { background: var(--maroon); }
+  .project-card::after {
+    content: '↗';
+    position: absolute;
+    top: 40px; right: 40px;
+    font-size: 20px;
+    color: rgba(237,235,221,0.2);
+    transition: all 0.3s;
+  }
+  .project-card:hover::after { color: var(--cotton); transform: translate(4px, -4px); }
+  .project-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    font-weight: 300;
+    color: rgba(237,235,221,0.06);
+    line-height: 1;
+    margin-bottom: -20px;
+    transition: color 0.4s;
+  }
+  .project-card:hover .project-num { color: rgba(237,235,221,0.1); }
+  .project-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--cotton);
+    margin-bottom: 16px;
+  }
+  .project-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(237,235,221,0.6);
+    margin-bottom: 24px;
+  }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .project-tag {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cherry);
+    border: 1px solid rgba(129,1,0,0.4);
+    padding: 4px 10px;
+  }
+
+  /* EDUCATION */
+  .education-section { }
+  .edu-card {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+    border: 1px solid rgba(237,235,221,0.08);
+    padding: 50px;
+    margin-bottom: 2px;
+    transition: border-color 0.3s;
+  }
+  .edu-card:hover { border-color: var(--cherry); }
+  .edu-year {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: rgba(237,235,221,0.15);
+    line-height: 1;
+  }
+  .edu-degree {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--cotton);
+    margin-bottom: 8px;
+  }
+  .edu-uni {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: rgba(237,235,221,0.5);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .edu-badge {
+    display: inline-block;
+    background: var(--cherry);
+    color: var(--cotton);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+  }
+
+  /* AWARDS */
+  .awards-section { background: var(--maroon); }
+  .awards-section .section-label { color: var(--cotton); }
+  .awards-section .section-label::before { background: var(--cotton); }
+  .awards-section .section-title { color: var(--cotton); }
+  .awards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .award-item {
+    border-top: 1px solid rgba(237,235,221,0.2);
+    padding-top: 32px;
+  }
+  .award-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+  .award-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--cotton);
+    margin-bottom: 8px;
+  }
+  .award-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(237,235,221,0.65);
+  }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--cotton);
+    color: var(--noir);
+  }
+  .contact-section .section-label { color: var(--cherry); }
+  .contact-section .section-label::before { background: var(--cherry); }
+  .contact-section .section-title { color: var(--noir); }
+  .contact-section .section-title em { color: var(--cherry); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .contact-links { display: flex; flex-direction: column; gap: 0; }
+  .contact-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(27,23,23,0.12);
+    text-decoration: none;
+    transition: all 0.3s;
+    color: var(--noir);
+  }
+  .contact-link:hover { padding-left: 12px; color: var(--cherry); }
+  .contact-link-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 2px;
+  }
+  .contact-link-value {
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .contact-link-arrow { font-size: 18px; opacity: 0.3; }
+  .contact-link:hover .contact-link-arrow { opacity: 1; }
+
+  .contact-personal { }
+  .contact-personal-title {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cherry);
+    margin-bottom: 24px;
+  }
+  .personal-detail {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: rgba(27,23,23,0.7);
+    line-height: 1.6;
+  }
+  .personal-detail strong {
+    color: var(--noir);
+    font-weight: 500;
+    min-width: 80px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--noir);
+    border-top: 1px solid rgba(237,235,221,0.06);
+    padding: 30px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(237,235,221,0.3);
+  }
+  footer span { color: var(--cherry); }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 22px 30px; }
+    .nav-links { display: none; }
+    section { padding: 80px 30px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 100px 30px 60px; }
+    .hero-right { display: none; }
+    .about, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 10px; }
+    .edu-card { grid-template-columns: 1fr; gap: 20px; }
+    .awards-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">V<span>.</span>Cheithan</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Work</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section style="padding:0" id="home">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">UI/UX Designer & Creative Technologist</div>
+      <h1 class="hero-name">
+        Viddittha<br><em>Cheithan</em>
+      </h1>
+      <p class="hero-title">Crafting Digital Experiences</p>
+      <p class="hero-desc">A design-minded developer passionate about turning complex user problems into intuitive, beautiful interfaces — from wireframe to pixel-perfect prototype.</p>
+      <a href="#contact" class="hero-cta">
+        Get In Touch <span class="hero-cta-arrow">→</span>
+      </a>
+    </div>
+    <div class="hero-right">
+      <div class="hero-bg-block"></div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">7.81</div>
+          <div class="hero-stat-label">CGPA — BCA</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">2+</div>
+          <div class="hero-stat-label">Major Projects</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">6+</div>
+          <div class="hero-stat-label">Design Tools</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">Figma</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">User Research</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Wireframing</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Prototyping</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">UI Design</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">HTML / CSS</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Information Architecture</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Canva</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Adobe Illustrator</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Figma</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">User Research</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Wireframing</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Prototyping</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">UI Design</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">HTML / CSS</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Information Architecture</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Canva</span><span class="ticker-dot">✦</span>
+    <span class="ticker-item">Adobe Illustrator</span><span class="ticker-dot">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About</div>
+  <h2 class="section-title">Designing with <em>purpose</em><br>and precision</h2>
+  <div class="about fade-up">
+    <div class="about-text">
+      <p>I'm <strong>Viddittha Cheithan</strong>, a UI/UX Designer and BCA graduate from Vidya First Grade College, Tumkur University. I believe that great design sits at the intersection of empathy and logic — understanding users deeply, then solving their problems beautifully.</p>
+      <p>My work at <strong>Zidio Development</strong> gave me hands-on experience across the full design pipeline: from discovery and competitor analysis to high-fidelity prototypes and developer handoffs. I thrive in collaborative environments and care deeply about <strong>visual consistency and usability</strong>.</p>
+      <p>I'm fluent in Tamil, Kannada, and English, and I bring the same multi-layered thinking to my design work — always considering context, culture, and the human behind the screen.</p>
+    </div>
+    <div class="about-right">
+      <div class="about-card">
+        <div class="about-card-title">Location</div>
+        <div class="about-card-value">Madipakam, Chennai<br>Tamil Nadu, India</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-title">Languages</div>
+        <div class="about-card-value">Tamil · Kannada · English</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-title">Interests</div>
+        <div class="about-card-value">Visual Arts · Music · Web Surfing · Books</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-title">Date of Birth</div>
+        <div class="about-card-value">21 August 2003</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="experience-section">
+  <div class="section-label">Experience</div>
+  <h2 class="section-title">Where I've <em>worked</em></h2>
+  <div class="experience-grid fade-up">
+    <div class="exp-item">
+      <div>
+        <div class="exp-date">Jan 2025 –<br>April 2025</div>
+        <div class="exp-company">Zidio Development</div>
+      </div>
+      <div>
+        <div class="exp-role">UI/UX Design Intern</div>
+        <ul class="exp-bullets">
+          <li>Led design for two major products: a Task Management App and an E-Learning Platform</li>
+          <li>Conducted user research and competitor analysis to map pain points and opportunities</li>
+          <li>Created low-fidelity wireframes and interactive prototypes in Figma</li>
+          <li>Collaborated cross-functionally to ensure seamless design-to-development handoffs</li>
+          <li>Designed responsive UI layouts with a focus on usability and visual consistency</li>
+          <li>Contributed to learner, admin, and instructor dashboards for the e-learning platform</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Skills</div>
+  <h2 class="section-title">Tools &amp; <em>capabilities</em></h2>
+  <div class="skills-grid fade-up">
+    <div class="skill-cell">
+      <div class="skill-cell-category">Design & UX</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Wireframing</span>
+        <span class="skill-tag">Prototyping</span>
+        <span class="skill-tag">User Research</span>
+        <span class="skill-tag">Info Architecture</span>
+        <span class="skill-tag">Responsive Design</span>
+      </div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-category">Design Tools</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Figma</span>
+        <span class="skill-tag">Canva</span>
+        <span class="skill-tag">Adobe Illustrator</span>
+        <span class="skill-tag">Photoshop</span>
+        <span class="skill-tag">Notion</span>
+      </div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-category">Development</div>
+      <div class="skill-tags">
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
+        <span class="skill-tag">MS Word</span>
+      </div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-cell-category">AI Tools</div>
+      <div class="skill-tags">
+        <span class="skill-tag">ChatGPT</span>
+        <span class="skill-tag">Gemini</span>
+        <span class="skill-tag">DeepSeek</span>
+        <span class="skill-tag">Uizard</span>
+        <span class="skill-tag">Galileo</span>
+        <span class="skill-tag">Khroma</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="padding-top:0">
+  <div class="section-label">Projects</div>
+  <h2 class="section-title">Selected <em>work</em></h2>
+  <div class="projects-grid fade-up">
+    <div class="project-card">
+      <div class="project-num">01</div>
+      <div class="project-name">Task Management App</div>
+      <p class="project-desc">Designed end-to-end UI/UX for a productivity-focused task management application during my internship. Focused on clarity of information hierarchy, task prioritization flows, and collaborative features.</p>
+      <div class="project-tags">
+        <span class="project-tag">Figma</span>
+        <span class="project-tag">UX Research</span>
+        <span class="project-tag">Prototyping</span>
+        <span class="project-tag">Zidio Development</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">02</div>
+      <div class="project-name">E-Learning Platform</div>
+      <p class="project-desc">Designed multi-role dashboards (learner, admin, instructor) for a comprehensive online education platform. Ensured consistent visual language and optimized learner onboarding experience.</p>
+      <div class="project-tags">
+        <span class="project-tag">Figma</span>
+        <span class="project-tag">Dashboard Design</span>
+        <span class="project-tag">Multi-role UX</span>
+        <span class="project-tag">Zidio Development</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">03</div>
+      <div class="project-name">Car Spa — Service Booking</div>
+      <p class="project-desc">A full-stack vehicle washing and detailing service website built as part of an academic team project. Designed intuitive UI screens with a smooth booking flow and optimized user journey.</p>
+      <div class="project-tags">
+        <span class="project-tag">HTML / CSS / JS</span>
+        <span class="project-tag">UI Design</span>
+        <span class="project-tag">Booking UX</span>
+        <span class="project-tag">Academic</span>
+      </div>
+    </div>
+    <div class="project-card" style="background: rgba(129,1,0,0.06)">
+      <div class="project-num" style="color: rgba(237,235,221,0.05)">+</div>
+      <div class="project-name" style="font-style:italic; color: rgba(237,235,221,0.4)">More coming soon</div>
+      <p class="project-desc" style="color: rgba(237,235,221,0.3)">Currently working on new projects exploring AI-assisted design, mobile-first experiences, and design systems.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-label">Education</div>
+  <h2 class="section-title">Academic <em>background</em></h2>
+  <div class="fade-up">
+    <div class="edu-card">
+      <div>
+        <div class="edu-year">2025</div>
+      </div>
+      <div>
+        <div class="edu-degree">Bachelor of Computer Applications (BCA)</div>
+        <div class="edu-uni">Vidya First Grade College · Tumkur University</div>
+        <div class="edu-badge">CGPA 7.81 — Graduated 2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section class="awards-section">
+  <div class="section-label">Recognition</div>
+  <h2 class="section-title">Awards &amp; <em>achievements</em></h2>
+  <div class="awards-grid fade-up">
+    <div class="award-item">
+      <div class="award-icon">🥇</div>
+      <div class="award-title">University Gold Medal</div>
+      <p class="award-desc">Awarded the Gold Medal in Poster Making by Tumkur University — recognising exceptional visual communication and design craftsmanship.</p>
+    </div>
+    <div class="award-item">
+      <div class="award-icon">💼</div>
+      <div class="award-title">Internship Stipend</div>
+      <p class="award-desc">Received a stipend from Zidio Development for UI/UX design internship contributions, reflecting the quality and impact of delivered work.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="section-label">Contact</div>
+  <h2 class="section-title">Let's <em>connect</em></h2>
+  <div class="contact-grid fade-up">
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:vidditthacheithan21@gmail.com">
+        <div>
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-value">vidditthacheithan21@gmail.com</div>
+        </div>
+        <div class="contact-link-arrow">↗</div>
+      </a>
+      <a class="contact-link" href="tel:+919164293746">
+        <div>
+          <div class="contact-link-label">Instagram</div>
+          <div class="contact-link-value">@vidditthacheithan</div>
+        </div>
+        <div class="contact-link-arrow">↗</div>
+      </a>
+      <a class="contact-link" href="https://www.linkedin.com/in/viddittha-c-28bb26285/" target="_blank">
+        <div>
+          <div class="contact-link-label">LinkedIn</div>
+          <div class="contact-link-value">viddittha-c-28bb26285</div>
+        </div>
+        <div class="contact-link-arrow">↗</div>
+      </a>
+      <a class="contact-link" href="https://www.behance.net/viddittcheitha" target="_blank">
+        <div>
+          <div class="contact-link-label">Behance</div>
+          <div class="contact-link-value">viddittcheitha</div>
+        </div>
+        <div class="contact-link-arrow">↗</div>
+      </a>
+    </div>
+    <div class="contact-personal">
+      <div class="contact-personal-title">Personal Details</div>
+      <div class="personal-detail"><strong>Name</strong> Viddittha Cheithan</div>
+      <div class="personal-detail"><strong>DOB</strong> 21 August 2003</div>
+      <div class="personal-detail"><strong>Languages</strong> Tamil, Kannada, English</div>
+      <div class="personal-detail"><strong>Location</strong> 256/6 Main Road, A5 Indu Housing Pvt, Sadhasivam Nagar, Madipakam, Chennai 600091</div>
+      <div class="personal-detail"><strong>Hobbies</strong> Visual Arts, Music, Web Surfing, Books</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Viddittha Cheithan — All rights reserved</p>
+  <p>Designed with <span>♥</span> in Chennai</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .project-card, .skill-cell, .about-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {});
+    el.addEventListener('mouseleave', () => {});
+  });
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html> 
